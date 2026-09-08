@@ -6,7 +6,7 @@ import Foundation
 final class PendingTouchPoller: ObservableObject {
     private let api: APIClient
     private let credentials: CredentialStore
-    private let onTouch: (TouchKind) -> Void
+    private let onTouch: (String) -> Void
     private let onAck: () -> Void
     private let interval: UInt64 = 15_000_000_000  // 15 秒
 
@@ -16,7 +16,7 @@ final class PendingTouchPoller: ObservableObject {
 
     init(api: APIClient,
          credentials: CredentialStore,
-         onTouch: @escaping (TouchKind) -> Void,
+         onTouch: @escaping (String) -> Void,
          onAck: @escaping () -> Void) {
         self.api = api
         self.credentials = credentials
@@ -48,16 +48,15 @@ final class PendingTouchPoller: ObservableObject {
         do {
             let data = try await api.get(.pendingTouch, token: token)
             guard let response = try? JSONDecoder().decode(Response.self, from: data),
-                  let raw = response.kind else { return }
+                  let payload = response.kind else { return }
 
             // ack 是已读回执，不是触感：走独立回调，不展示不震动
-            if raw == "ack" {
+            if payload == "ack" {
                 onAck()
                 return
             }
 
-            guard let touch = TouchKind(rawValue: raw) else { return }
-            onTouch(touch)
+            onTouch(payload)
         } catch {
             // 网络错误静默，下个周期重试
         }

@@ -13,7 +13,7 @@ final class TouchRouter: ObservableObject {
     /// 是否与伴侣完成配对（远程通道可用）
     var hasRemotePartner: Bool { remote.isReachable }
 
-    private var lastSentKind: TouchKind?
+    private var lastSentTitle: String?
 
     init(local: ConnectionSession, remote: RemoteTransport) {
         self.local = local
@@ -28,18 +28,18 @@ final class TouchRouter: ObservableObject {
         local.activate()
     }
 
-    func send(_ touch: TouchKind) {
-        lastSentKind = touch
+    func send(_ item: TouchItem) {
+        lastSentTitle = item.title
 
         if remote.isReachable {
             // 已配对：始终发给伴侣；本地 Watch 同步震动作为发送确认
-            local.send(touch)
+            local.send(payload: item.payload)
             Task {
-                statusMessage = await remote.sendAndDescribe(touch)
+                statusMessage = await remote.sendAndDescribe(item)
             }
         } else if local.isReachableNow {
             // 未配对：退回本地演示，发给自己的 Watch
-            local.send(touch)
+            local.send(payload: item.payload)
         } else {
             statusMessage = TransportError.notPaired.localizedDescription
         }
@@ -47,7 +47,7 @@ final class TouchRouter: ObservableObject {
 
     /// 收到对方的已读回执
     func receiveAck() {
-        guard let kind = lastSentKind else { return }
-        statusMessage = "对方已收到：\(kind.title)"
+        guard let title = lastSentTitle else { return }
+        statusMessage = "对方已收到：\(title)"
     }
 }

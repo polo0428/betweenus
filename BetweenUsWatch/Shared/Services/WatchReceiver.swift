@@ -4,6 +4,13 @@ import WatchKit
 
 class WatchReceiver: NSObject, ObservableObject, WCSessionDelegate {
     @Published var status = "已准备"
+    /// iPhone 同步来的自定义触感列表（applicationContext 全量快照）
+    @Published var customTouches: [String] = []
+
+    /// 发送面板全部选项：10 个预设 + 自定义（按创建顺序排在后面）
+    var allItems: [TouchItem] {
+        TouchKind.allCases.map { TouchItem.preset($0) } + customTouches.map { TouchItem.custom($0) }
+    }
 
     func activate() {
         guard WCSession.isSupported() else { return }
@@ -11,23 +18,36 @@ class WatchReceiver: NSObject, ObservableObject, WCSessionDelegate {
         WCSession.default.activate()
     }
 
-    func send(_ touch: TouchKind) {
+    func send(_ item: TouchItem) {
         guard WCSession.default.isReachable else {
             status = "iPhone 暂不可达"
             return
         }
 
-        WCSession.default.sendMessage(["touch": touch.rawValue], replyHandler: nil, errorHandler: nil)
+        WCSession.default.sendMessage(["touch": item.payload], replyHandler: nil, errorHandler: nil)
         WKInterfaceDevice.current().play(.click)
-        status = "已发送 \(touch.title)"
+        status = "已发送 \(item.title)"
     }
 
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {}
 
-    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-        guard let raw = message["touch"] as? String, let touch = TouchKind(rawValue: raw) else { return }
+    /// iPhone 端自定义触感列表变化时同步过来
+    func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String : Any]) {
+        guard let titles = applicationContext["customTouches"] as? [String] else { return }
         DispatchQueue.main.async {
-            WKInterfaceDevice.current().play(touch.haptic)
+            self.customTouches = titles
+        }
+    }
+
+    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
+        guard let raw = message["touch"] as? String,
+              let touch = IncomingTouch(kind: raw) else { return }
+        DispatchQueue.main.async {
+            if let kind = TouchKind(rawValue: raw) {
+                WKInterfaceDevice.current().play(kind.haptic)
+            } else {
+                WKInterfaceDevice.current().play(.click)
+            }
             self.status = "收到：\(touch.title)"
         }
     }

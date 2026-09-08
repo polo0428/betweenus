@@ -27,9 +27,3 @@ enum TransportResult: Equatable {
     case deliveredViaServer
     case failed(String)
 }
-
-protocol TouchTransport {
-    var statusMessage: String { get }
-    var isReachable: Bool { get }
-    func send(_ touch: TouchKind) async -> TransportResult
-}

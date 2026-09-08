@@ -16,6 +16,7 @@ struct AppContainer {
     let pairing: PairingModel
     let push: PushReceiver
     let poller: PendingTouchPoller
+    let customStore: CustomTouchStore
 
     static func make() -> AppContainer {
         let credentials = CredentialStore()
@@ -25,8 +26,9 @@ struct AppContainer {
         let router = TouchRouter(local: local, remote: remote)
         let push = PushReceiver(local: local, remote: remote, api: api, credentials: credentials)
         let pairing = PairingModel(api: api, credentials: credentials)
-        let poller = PendingTouchPoller(api: api, credentials: credentials) { [push] touch in
-            push.receive(touch)
+        let customStore = CustomTouchStore()
+        let poller = PendingTouchPoller(api: api, credentials: credentials) { [push] payload in
+            push.receive(payload: payload)
         } onAck: { [router] in
             router.receiveAck()
         }
@@ -35,9 +37,14 @@ struct AppContainer {
             push.reportTokenIfNeeded()
         }
 
+        // 自定义触感列表变化 → 全量同步到 Watch（Watch 无键盘，选项列表由 iPhone 维护）
+        customStore.onChange = { [local] titles in
+            local.syncCustomTouches(titles)
+        }
+
         // Watch 主动发送：iPhone 收到 Watch 的消息后走远程通道发给伴侣
-        local.onReceiveFromWatch = { [remote] touch in
-            Task { await remote.send(touch) }
+        local.onReceiveFromWatch = { [remote] payload in
+            Task { await remote.send(payload: payload) }
         }
 
         return AppContainer(
@@ -48,7 +55,8 @@ struct AppContainer {
             router: router,
             pairing: pairing,
             push: push,
-            poller: poller
+            poller: poller,
+            customStore: customStore
         )
     }
 }

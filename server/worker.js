@@ -6,6 +6,7 @@
 //
 // 触感中转（双通道）：
 //   POST /touch { kind }             发送触感（Bearer token 鉴权）
+//                                    kind = 预设 rawValue 或自定义文案（≤10 字），ack 为已读回执
 //                                    → 暂存对方收件箱（轮询通道，始终启用）
 //                                    → APNs 推送（配置了 APNS 密钥才启用）
 //   GET  /touch/pending              轮询拉取未取走的触感（取走即删）
@@ -85,7 +86,8 @@ async function handleTouch(env, request, body) {
 
   const kind = String(body.kind || '');
   const isAck = kind === 'ack';
-  if (!isAck && !touchTitle(kind)) return json({ error: 'invalid kind' }, 400);
+  const isCustom = isCustomKind(kind);
+  if (!isAck && !isCustom && !touchTitle(kind)) return json({ error: 'invalid kind' }, 400);
 
   // 通道一：暂存到对方收件箱（轮询通道，始终启用；ack 同样走这里回传）
   await env.BETWEENUS_KV.put(
@@ -100,7 +102,7 @@ async function handleTouch(env, request, body) {
     if (!isAck && partner && partner.apnsToken && env.APNS_KEY_ID) {
       const resp = await sendApns(env, partner.apnsToken, {
         aps: {
-          alert: { title: '对方发来一个触感', body: touchTitle(kind) },
+          alert: { title: '对方发来一个触感', body: touchTitle(kind) ?? kind },
           sound: 'default',
           'content-available': 1
         },
@@ -193,11 +195,28 @@ function randomCode() {
 }
 
 const TOUCH_TITLES = {
+  // 日常
+  goodMorning: '早安',
+  busy: '在忙',
+  home: '到家了',
+  cheerUp: '加油',
+  // 心意
   missYou: '想你了',
   hug: '抱一下',
+  loveYou: '爱你',
+  sorry: '对不起',
+  // 特别
   thinking: '在想你',
   goodNight: '晚安'
 };
+
+// 自定义文案上限，与 iOS 端输入限制一致
+const MAX_CUSTOM_LEN = 10;
+
+// 自定义触感：非 ack 且非预设的任意短文本（payload 自包含，无需对方预存）
+function isCustomKind(kind) {
+  return typeof kind === 'string' && kind.length > 0 && kind.length <= MAX_CUSTOM_LEN;
+}
 
 function touchTitle(kind) {
   return TOUCH_TITLES[kind];

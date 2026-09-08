@@ -11,8 +11,8 @@ struct WatchHomeView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
                 header
-                WatchActionGrid { touch in
-                    receiver.send(touch)
+                WatchActionGrid(items: receiver.allItems) { item in
+                    receiver.send(item)
                 }
                 statusCard
             }

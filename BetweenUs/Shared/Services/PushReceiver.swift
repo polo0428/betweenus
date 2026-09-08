@@ -4,7 +4,7 @@ import UIKit
 
 @MainActor
 final class PushReceiver: NSObject, ObservableObject {
-    @Published var lastReceived: TouchKind?
+    @Published var lastReceived: IncomingTouch?
     @Published var deviceToken: String?
     @Published var registrationError: String?
 
@@ -54,19 +54,19 @@ final class PushReceiver: NSObject, ObservableObject {
         }
     }
 
-    /// 所有接收通道（APNs / 轮询）的统一入口
-    func receive(_ touch: TouchKind) {
+    /// 所有接收通道（APNs / 轮询）的统一入口；payload 为预设 rawValue 或自定义文案
+    func receive(payload: String) {
+        guard let touch = IncomingTouch(kind: payload) else { return }
         lastReceived = touch
-        local.send(touch)
+        local.send(payload: payload)
         // 已读回执：收到即自动回传，对方状态栏将更新
         Task { await remote.sendAck() }
     }
 
-    /// 收到推送：更新横幅 + 转发本地 Watch 震动
+    /// 收到推送：解析 payload → 统一入口
     private func handleIncoming(_ userInfo: [AnyHashable: Any]) {
-        guard let raw = userInfo["kind"] as? String,
-              let touch = TouchKind(rawValue: raw) else { return }
-        receive(touch)
+        guard let payload = userInfo["kind"] as? String else { return }
+        receive(payload: payload)
     }
 }
 

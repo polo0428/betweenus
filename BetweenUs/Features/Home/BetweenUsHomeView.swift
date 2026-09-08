@@ -3,7 +3,10 @@ import SwiftUI
 struct BetweenUsHomeView: View {
     let isPaired: Bool
     let lastStatus: String
-    let onSend: (TouchKind) -> Void
+    let touchItems: [TouchItem]
+    let onSend: (TouchItem) -> Void
+    let onAddCustom: (String) -> Void
+    let onRemoveCustom: (String) -> Void
 
     var body: some View {
         NavigationStack {
@@ -11,7 +14,12 @@ struct BetweenUsHomeView: View {
                 VStack(alignment: .leading, spacing: 18) {
                     BetweenUsHeroCard()
                     ConnectionStatusCard(isPaired: isPaired, lastStatus: lastStatus)
-                    TouchActionGrid(onSend: onSend)
+                    TouchActionGrid(
+                        items: touchItems,
+                        onSend: onSend,
+                        onAddCustom: onAddCustom,
+                        onRemoveCustom: onRemoveCustom
+                    )
                     statusFooter
                 }
                 .frame(maxWidth: 720, alignment: .leading)
@@ -63,7 +71,10 @@ struct BetweenUsHomeView: View {
     BetweenUsHomeView(
         isPaired: true,
         lastStatus: "预览模式 - Apple Watch 已连接",
-        onSend: { _ in }
+        touchItems: TouchKind.allCases.map { TouchItem.preset($0) },
+        onSend: { _ in },
+        onAddCustom: { _ in },
+        onRemoveCustom: { _ in }
     )
 }
 
@@ -71,6 +82,9 @@ struct BetweenUsHomeView: View {
     BetweenUsHomeView(
         isPaired: false,
         lastStatus: "预览模式 - 等待连接 Apple Watch",
-        onSend: { _ in }
+        touchItems: TouchKind.allCases.map { TouchItem.preset($0) },
+        onSend: { _ in },
+        onAddCustom: { _ in },
+        onRemoveCustom: { _ in }
     )
 }

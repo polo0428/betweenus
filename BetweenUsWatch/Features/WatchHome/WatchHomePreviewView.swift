@@ -5,7 +5,7 @@ struct WatchHomePreviewView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
                 header
-                WatchActionGrid { _ in }
+                WatchActionGrid(items: TouchKind.allCases.map { TouchItem.preset($0) }) { _ in }
                 statusCard
             }
             .padding(12)

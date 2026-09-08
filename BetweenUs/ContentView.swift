@@ -4,6 +4,7 @@ struct ContentView: View {
     @StateObject private var router: TouchRouter
     @StateObject private var pairing: PairingModel
     @StateObject private var push: PushReceiver
+    @StateObject private var customStore: CustomTouchStore
     @State private var showPairing = false
     @State private var container: AppContainer
 
@@ -15,13 +16,21 @@ struct ContentView: View {
         _router = StateObject(wrappedValue: container.router)
         _pairing = StateObject(wrappedValue: container.pairing)
         _push = StateObject(wrappedValue: container.push)
+        _customStore = StateObject(wrappedValue: container.customStore)
+    }
+
+    private var touchItems: [TouchItem] {
+        TouchKind.allCases.map { TouchItem.preset($0) } + customStore.touches.map { TouchItem.custom($0) }
     }
 
     var body: some View {
         BetweenUsHomeView(
             isPaired: router.isLocalWatchPaired,
             lastStatus: router.statusMessage,
-            onSend: { router.send($0) }
+            touchItems: touchItems,
+            onSend: { router.send($0) },
+            onAddCustom: { customStore.add($0) },
+            onRemoveCustom: { customStore.remove($0) }
         )
         .task {
             router.activateLocal()
@@ -62,7 +71,7 @@ struct ContentView: View {
         }
     }
 
-    private func incomingBanner(_ touch: TouchKind) -> some View {
+    private func incomingBanner(_ touch: IncomingTouch) -> some View {
         HStack(spacing: 10) {
             Image(systemName: touch.symbol)
                 .foregroundStyle(touch.tint)
