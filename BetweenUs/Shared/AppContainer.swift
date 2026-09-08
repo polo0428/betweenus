@@ -2,7 +2,7 @@ import Foundation
 
 enum AppConfiguration {
     /// 部署中转服务（见 server/ 目录）后替换为你的 Worker 域名
-    static let apiBaseURL = URL(string: "https://api.betweenus.app")!
+    static let apiBaseURL = URL(string: "https://betweenus-relay.polohuang0428.workers.dev")!
 }
 
 /// Composition Root：唯一负责创建和连接所有模块的地方
@@ -15,6 +15,7 @@ struct AppContainer {
     let router: TouchRouter
     let pairing: PairingModel
     let push: PushReceiver
+    let poller: PendingTouchPoller
 
     static func make() -> AppContainer {
         let credentials = CredentialStore()
@@ -24,6 +25,9 @@ struct AppContainer {
         let router = TouchRouter(local: local, remote: remote)
         let push = PushReceiver(local: local, api: api, credentials: credentials)
         let pairing = PairingModel(api: api, credentials: credentials)
+        let poller = PendingTouchPoller(api: api, credentials: credentials) { [push] touch in
+            push.receive(touch)
+        }
 
         pairing.onBound = { [push] in
             push.reportTokenIfNeeded()
@@ -36,7 +40,8 @@ struct AppContainer {
             remote: remote,
             router: router,
             pairing: pairing,
-            push: push
+            push: push,
+            poller: poller
         )
     }
 }

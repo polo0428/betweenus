@@ -1,20 +1,32 @@
 // BetweenUs 消息中转 Worker（Cloudflare Workers + KV）
 //
-// 职责：
-//   POST /pair/generate        生成 6 位配对码，返回 { code }
-//   POST /pair/bind { code }   用对方的码完成绑定，返回 { token }
-//   POST /touch { kind }       发送触感（Bearer token 鉴权）→ APNs 推给伴侣
-//   POST /device/register { apnsToken }  上报本机 APNs token
+// 配对：
+//   POST /pair/generate              生成 6 位配对码，返回 { code }
+//   POST /pair/bind { code }         用对方的码完成绑定，返回 { token }
+//
+// 触感中转（双通道）：
+//   POST /touch { kind }             发送触感（Bearer token 鉴权）
+//                                    → 暂存对方收件箱（轮询通道，始终启用）
+//                                    → APNs 推送（配置了 APNS 密钥才启用）
+//   GET  /touch/pending              轮询拉取未取走的触感（取走即删）
+//
+// 设备：
+//   POST /device/register { apnsToken }  上报本机 APNs token（APNs 通道用）
 //
 // 部署见 server/README.md
 
 export default {
   async fetch(request, env) {
+    const url = new URL(request.url);
+
+    if (url.pathname === '/touch/pending' && request.method === 'GET') {
+      return await handlePending(env, request);
+    }
+
     if (request.method !== 'POST') {
       return json({ error: 'method not allowed' }, 405);
     }
 
-    const url = new URL(request.url);
     const body = await request.json().catch(() => ({}));
 
     try {
@@ -71,23 +83,47 @@ async function handleTouch(env, request, body) {
   const user = await env.BETWEENUS_KV.get(`user:${token}`, 'json');
   if (!user || !user.partner) return json({ error: '尚未配对' }, 403);
 
-  const partner = await env.BETWEENUS_KV.get(`user:${user.partner}`, 'json');
-  if (!partner || !partner.apnsToken) return json({ error: '对方设备未注册推送' }, 404);
-
   const kind = String(body.kind || '');
-  const resp = await sendApns(env, partner.apnsToken, {
-    aps: {
-      alert: { title: '对方发来一个触感', body: touchTitle(kind) },
-      sound: 'default',
-      'content-available': 1
-    },
-    kind
-  });
+  if (!touchTitle(kind)) return json({ error: 'invalid kind' }, 400);
 
-  if (!resp.ok) {
-    return json({ error: `APNs rejected: ${resp.status}` }, 502);
+  // 通道一：暂存到对方收件箱（轮询通道，始终启用）
+  await env.BETWEENUS_KV.put(
+    `pending:${user.partner}`,
+    JSON.stringify({ kind, at: Date.now() }),
+    { expirationTtl: 86400 }
+  );
+
+  // 通道二：APNs 推送（仅配置了 APNs 密钥时启用；失败不阻塞轮询通道）
+  try {
+    const partner = await env.BETWEENUS_KV.get(`user:${user.partner}`, 'json');
+    if (partner && partner.apnsToken && env.APNS_KEY_ID) {
+      const resp = await sendApns(env, partner.apnsToken, {
+        aps: {
+          alert: { title: '对方发来一个触感', body: touchTitle(kind) },
+          sound: 'default',
+          'content-available': 1
+        },
+        kind
+      });
+      if (!resp.ok) console.warn(`APNs rejected: ${resp.status}`);
+    }
+  } catch (err) {
+    console.warn(`APNs failed: ${err}`);
   }
+
   return json({ ok: true });
+}
+
+async function handlePending(env, request) {
+  const token = bearerToken(request);
+  if (!token) return json({ error: 'unauthorized' }, 401);
+
+  const key = `pending:${token}`;
+  const record = await env.BETWEENUS_KV.get(key, 'json');
+  if (!record) return json({ kind: null });
+
+  await env.BETWEENUS_KV.delete(key);
+  return json({ kind: record.kind, at: record.at });
 }
 
 async function handleRegister(env, request, body) {
@@ -155,8 +191,15 @@ function randomCode() {
   return Array.from(bytes, b => b % 10).join('');
 }
 
+const TOUCH_TITLES = {
+  missYou: '想你了',
+  hug: '抱一下',
+  thinking: '在想你',
+  goodNight: '晚安'
+};
+
 function touchTitle(kind) {
-  return { missYou: '想你了', hug: '抱一下', thinking: '在想你', goodNight: '晚安' }[kind] || '一个触感';
+  return TOUCH_TITLES[kind];
 }
 
 function b64u(str) {

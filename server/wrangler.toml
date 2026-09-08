@@ -1,0 +1,7 @@
+name = "betweenus-relay"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+kv_namespaces = [
+  { binding = "BETWEENUS_KV", id = "c62db59baf1a4fe1b0bcc6f5dac7dc40" }
+]

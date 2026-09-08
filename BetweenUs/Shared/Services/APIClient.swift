@@ -20,6 +20,41 @@ struct APIClient {
         }
     }
 
+    enum GetEndpoint {
+        case pendingTouch
+
+        var path: String {
+            switch self {
+            case .pendingTouch: return "/touch/pending"
+            }
+        }
+    }
+
+    func get(_ endpoint: GetEndpoint, token: String? = nil) async throws -> Data {
+        var request = URLRequest(url: baseURL.appendingPathComponent(endpoint.path))
+        request.httpMethod = "GET"
+        if let token {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+
+        let data: Data
+        let response: URLResponse
+        do {
+            (data, response) = try await session.data(for: request)
+        } catch {
+            throw TransportError.network(error)
+        }
+
+        guard let http = response as? HTTPURLResponse else {
+            throw TransportError.network(URLError(.badServerResponse))
+        }
+        guard (200..<300).contains(http.statusCode) else {
+            let message = String(decoding: data, as: UTF8.self)
+            throw TransportError.serverRejected(message.isEmpty ? "服务器错误（\(http.statusCode)）" : message)
+        }
+        return data
+    }
+
     func post<Body: Encodable>(_ endpoint: Endpoint, body: Body, token: String? = nil) async throws -> Data {
         var request = URLRequest(url: baseURL.appendingPathComponent(endpoint.path))
         request.httpMethod = "POST"

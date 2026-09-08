@@ -5,9 +5,13 @@ struct ContentView: View {
     @StateObject private var pairing: PairingModel
     @StateObject private var push: PushReceiver
     @State private var showPairing = false
+    @State private var container: AppContainer
+
+    @Environment(\.scenePhase) private var scenePhase
 
     @MainActor
     init(container: AppContainer) {
+        self.container = container
         _router = StateObject(wrappedValue: container.router)
         _pairing = StateObject(wrappedValue: container.pairing)
         _push = StateObject(wrappedValue: container.push)
@@ -22,6 +26,13 @@ struct ContentView: View {
         .task {
             router.activateLocal()
             push.registerForRemoteNotifications()
+        }
+        .onChange(of: scenePhase) { phase in
+            if phase == .active {
+                container.poller.start()
+            } else {
+                container.poller.stop()
+            }
         }
         .overlay(alignment: .topTrailing) {
             pairingButton

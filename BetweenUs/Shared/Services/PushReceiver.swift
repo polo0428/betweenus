@@ -52,12 +52,17 @@ final class PushReceiver: NSObject, ObservableObject {
         }
     }
 
+    /// 所有接收通道（APNs / 轮询）的统一入口
+    func receive(_ touch: TouchKind) {
+        lastReceived = touch
+        local.send(touch)
+    }
+
     /// 收到推送：更新横幅 + 转发本地 Watch 震动
     private func handleIncoming(_ userInfo: [AnyHashable: Any]) {
         guard let raw = userInfo["kind"] as? String,
               let touch = TouchKind(rawValue: raw) else { return }
-        lastReceived = touch
-        local.send(touch)
+        receive(touch)
     }
 }
 
