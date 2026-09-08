@@ -34,4 +34,11 @@ extension RemoteTransport: TouchTransport {
             return message
         }
     }
+
+    /// 已读回执：收到对方触感后回传，对方状态栏将显示"对方已收到"
+    func sendAck() async {
+        guard let token = credentials.read(.authToken) else { return }
+        struct Body: Encodable { let kind: String }
+        _ = try? await api.post(.sendTouch, body: Body(kind: "ack"), token: token)
+    }
 }

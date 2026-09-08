@@ -9,11 +9,13 @@ final class PushReceiver: NSObject, ObservableObject {
     @Published var registrationError: String?
 
     private let local: ConnectionSession
+    private let remote: RemoteTransport
     private let api: APIClient
     private let credentials: CredentialStore
 
-    init(local: ConnectionSession, api: APIClient, credentials: CredentialStore) {
+    init(local: ConnectionSession, remote: RemoteTransport, api: APIClient, credentials: CredentialStore) {
         self.local = local
+        self.remote = remote
         self.api = api
         self.credentials = credentials
         super.init()
@@ -56,6 +58,8 @@ final class PushReceiver: NSObject, ObservableObject {
     func receive(_ touch: TouchKind) {
         lastReceived = touch
         local.send(touch)
+        // 已读回执：收到即自动回传，对方状态栏将更新
+        Task { await remote.sendAck() }
     }
 
     /// 收到推送：更新横幅 + 转发本地 Watch 震动

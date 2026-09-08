@@ -8,6 +8,9 @@ class ConnectionSession: NSObject, ObservableObject, WCSessionDelegate {
     /// 本地 Watch 当前是否可达（WCSession 通道即时状态）
     var isReachableNow: Bool { WCSession.default.isReachable }
 
+    /// 收到 Watch 端发来的发送请求（Watch 主动发送 → 转发远程通道）
+    var onReceiveFromWatch: ((TouchKind) -> Void)?
+
     func activate() {
         guard WCSession.isSupported() else { return }
         WCSession.default.delegate = self
@@ -33,6 +36,14 @@ class ConnectionSession: NSObject, ObservableObject, WCSessionDelegate {
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         DispatchQueue.main.async {
             self.isPaired = session.isPaired
+        }
+    }
+
+    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
+        guard let raw = message["touch"] as? String,
+              let touch = TouchKind(rawValue: raw) else { return }
+        DispatchQueue.main.async {
+            self.onReceiveFromWatch?(touch)
         }
     }
 

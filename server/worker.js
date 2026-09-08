@@ -84,19 +84,20 @@ async function handleTouch(env, request, body) {
   if (!user || !user.partner) return json({ error: '尚未配对' }, 403);
 
   const kind = String(body.kind || '');
-  if (!touchTitle(kind)) return json({ error: 'invalid kind' }, 400);
+  const isAck = kind === 'ack';
+  if (!isAck && !touchTitle(kind)) return json({ error: 'invalid kind' }, 400);
 
-  // 通道一：暂存到对方收件箱（轮询通道，始终启用）
+  // 通道一：暂存到对方收件箱（轮询通道，始终启用；ack 同样走这里回传）
   await env.BETWEENUS_KV.put(
     `pending:${user.partner}`,
     JSON.stringify({ kind, at: Date.now() }),
     { expirationTtl: 86400 }
   );
 
-  // 通道二：APNs 推送（仅配置了 APNs 密钥时启用；失败不阻塞轮询通道）
+  // 通道二：APNs 推送（仅配置了 APNs 密钥且非 ack 时启用；失败不阻塞轮询通道）
   try {
     const partner = await env.BETWEENUS_KV.get(`user:${user.partner}`, 'json');
-    if (partner && partner.apnsToken && env.APNS_KEY_ID) {
+    if (!isAck && partner && partner.apnsToken && env.APNS_KEY_ID) {
       const resp = await sendApns(env, partner.apnsToken, {
         aps: {
           alert: { title: '对方发来一个触感', body: touchTitle(kind) },

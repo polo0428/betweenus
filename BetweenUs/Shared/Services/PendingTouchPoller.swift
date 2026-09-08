@@ -7,16 +7,21 @@ final class PendingTouchPoller: ObservableObject {
     private let api: APIClient
     private let credentials: CredentialStore
     private let onTouch: (TouchKind) -> Void
+    private let onAck: () -> Void
     private let interval: UInt64 = 15_000_000_000  // 15 秒
 
     private var pollingTask: Task<Void, Never>?
 
     var isRunning: Bool { pollingTask != nil }
 
-    init(api: APIClient, credentials: CredentialStore, onTouch: @escaping (TouchKind) -> Void) {
+    init(api: APIClient,
+         credentials: CredentialStore,
+         onTouch: @escaping (TouchKind) -> Void,
+         onAck: @escaping () -> Void) {
         self.api = api
         self.credentials = credentials
         self.onTouch = onTouch
+        self.onAck = onAck
     }
 
     func start() {
@@ -43,8 +48,15 @@ final class PendingTouchPoller: ObservableObject {
         do {
             let data = try await api.get(.pendingTouch, token: token)
             guard let response = try? JSONDecoder().decode(Response.self, from: data),
-                  let raw = response.kind,
-                  let touch = TouchKind(rawValue: raw) else { return }
+                  let raw = response.kind else { return }
+
+            // ack 是已读回执，不是触感：走独立回调，不展示不震动
+            if raw == "ack" {
+                onAck()
+                return
+            }
+
+            guard let touch = TouchKind(rawValue: raw) else { return }
             onTouch(touch)
         } catch {
             // 网络错误静默，下个周期重试

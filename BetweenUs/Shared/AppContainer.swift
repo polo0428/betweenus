@@ -23,14 +23,21 @@ struct AppContainer {
         let local = ConnectionSession()
         let remote = RemoteTransport(api: api, credentials: credentials)
         let router = TouchRouter(local: local, remote: remote)
-        let push = PushReceiver(local: local, api: api, credentials: credentials)
+        let push = PushReceiver(local: local, remote: remote, api: api, credentials: credentials)
         let pairing = PairingModel(api: api, credentials: credentials)
         let poller = PendingTouchPoller(api: api, credentials: credentials) { [push] touch in
             push.receive(touch)
+        } onAck: { [router] in
+            router.receiveAck()
         }
 
         pairing.onBound = { [push] in
             push.reportTokenIfNeeded()
+        }
+
+        // Watch 主动发送：iPhone 收到 Watch 的消息后走远程通道发给伴侣
+        local.onReceiveFromWatch = { [remote] touch in
+            Task { await remote.send(touch) }
         }
 
         return AppContainer(
