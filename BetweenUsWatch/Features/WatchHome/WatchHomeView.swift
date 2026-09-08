@@ -14,12 +14,34 @@ struct WatchHomeView: View {
                 WatchActionGrid(items: receiver.allItems) { item in
                     receiver.send(item)
                 }
+                rhythmLabLink
                 statusCard
             }
             .padding(12)
         }
         .background(pageBackground.ignoresSafeArea())
         .task { receiver.activate() }
+    }
+
+    private var rhythmLabLink: some View {
+        NavigationLink {
+            RhythmLabView()
+        } label: {
+            HStack {
+                Image(systemName: "metronome")
+                    .foregroundStyle(.orange)
+                Text("节奏实验室（实验功能）")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.primary)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(12)
+            .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        }
+        .buttonStyle(.plain)
     }
 
     private var header: some View {
