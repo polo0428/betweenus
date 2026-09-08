@@ -6,15 +6,15 @@ import WatchKit
 // MARK: - 分类
 
 enum TouchCategory: String, CaseIterable, Identifiable {
-    case daily, love, special
+    case love, special, daily
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
-        case .daily: "日常"
         case .love: "心意"
         case .special: "特别"
+        case .daily: "日常"
         }
     }
 
@@ -27,20 +27,20 @@ enum TouchCategory: String, CaseIterable, Identifiable {
 // MARK: - 预设触感
 
 enum TouchKind: String, CaseIterable, Identifiable {
-    // 日常
-    case goodMorning, busy, home, cheerUp
-    // 心意
-    case missYou, hug, loveYou, sorry
+    // 心意（高频情感，置顶）
+    case missYou, hug, loveYou
     // 特别
-    case thinking, goodNight
+    case thinking, goodNight, sorry
+    // 日常
+    case goodMorning, busy
 
     var id: String { rawValue }
 
     var category: TouchCategory {
         switch self {
-        case .goodMorning, .busy, .home, .cheerUp: .daily
-        case .missYou, .hug, .loveYou, .sorry: .love
-        case .thinking, .goodNight: .special
+        case .missYou, .hug, .loveYou: .love
+        case .thinking, .goodNight, .sorry: .special
+        case .goodMorning, .busy: .daily
         }
     }
 
@@ -48,8 +48,6 @@ enum TouchKind: String, CaseIterable, Identifiable {
         switch self {
         case .goodMorning: "早安"
         case .busy: "在忙"
-        case .home: "到家了"
-        case .cheerUp: "加油"
         case .missYou: "想你了"
         case .hug: "抱一下"
         case .loveYou: "爱你"
@@ -63,8 +61,6 @@ enum TouchKind: String, CaseIterable, Identifiable {
         switch self {
         case .goodMorning: "把清晨的第一个问候送过去"
         case .busy: "告诉对方你在忙，晚点回复"
-        case .home: "平安到家的信号"
-        case .cheerUp: "给对方一点力量"
         case .missYou: "把想念轻轻送过去"
         case .hug: "给对方一个拥抱"
         case .loveYou: "最直接的那三个字"
@@ -78,8 +74,6 @@ enum TouchKind: String, CaseIterable, Identifiable {
         switch self {
         case .goodMorning: "sun.max.fill"
         case .busy: "clock.fill"
-        case .home: "house.fill"
-        case .cheerUp: "bolt.fill"
         case .missYou: "heart.fill"
         case .hug: "hands.clap.fill"
         case .loveYou: "heart.circle.fill"
@@ -93,8 +87,6 @@ enum TouchKind: String, CaseIterable, Identifiable {
         switch self {
         case .goodMorning: .yellow
         case .busy: .gray
-        case .home: .green
-        case .cheerUp: .orange
         case .missYou: .pink
         case .hug: .orange
         case .loveYou: .red

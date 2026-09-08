@@ -195,19 +195,17 @@ function randomCode() {
 }
 
 const TOUCH_TITLES = {
-  // 日常
-  goodMorning: '早安',
-  busy: '在忙',
-  home: '到家了',
-  cheerUp: '加油',
   // 心意
   missYou: '想你了',
   hug: '抱一下',
   loveYou: '爱你',
-  sorry: '对不起',
   // 特别
   thinking: '在想你',
-  goodNight: '晚安'
+  goodNight: '晚安',
+  sorry: '对不起',
+  // 日常
+  goodMorning: '早安',
+  busy: '在忙'
 };
 
 // 自定义文案上限，与 iOS 端输入限制一致
