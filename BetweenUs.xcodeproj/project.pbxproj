@@ -1,0 +1,106 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = { };
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000010000000000000001 /* BetweenUsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001 /* BetweenUsApp.swift */; };
+		A10000010000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002 /* ContentView.swift */; };
+		A10000020000000000000001 /* BetweenUsWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000020000000000000001 /* BetweenUsWatchApp.swift */; };
+		A10000010000000000000004 /* TouchKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000006 /* TouchKind.swift */; };
+		A10000010000000000000005 /* ConnectionSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000007 /* ConnectionSession.swift */; };
+		A10000010000000000000006 /* BetweenUsHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000008 /* BetweenUsHomeView.swift */; };
+		A10000010000000000000007 /* BetweenUsHeroCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000009 /* BetweenUsHeroCard.swift */; };
+		A10000010000000000000008 /* ConnectionStatusCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000A /* ConnectionStatusCard.swift */; };
+		A10000010000000000000009 /* TouchActionGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000B /* TouchActionGrid.swift */; };
+		A10000020000000000000002 /* TouchKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000006 /* TouchKind.swift */; };
+		A10000020000000000000003 /* WatchReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000020000000000000004 /* WatchReceiver.swift */; };
+		A10000020000000000000004 /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000020000000000000005 /* WatchHomeView.swift */; };
+		A10000020000000000000005 /* WatchActionGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000020000000000000006 /* WatchActionGrid.swift */; };
+		A10000020000000000000006 /* WatchHomePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000020000000000000007 /* WatchHomePreviewView.swift */; };
+		A1000001000000000000000A /* TouchTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000C /* TouchTransport.swift */; };
+		A1000001000000000000000B /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000D /* APIClient.swift */; };
+		A1000001000000000000000C /* CredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000E /* CredentialStore.swift */; };
+		A1000001000000000000000D /* RemoteTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000F /* RemoteTransport.swift */; };
+		A1000001000000000000000E /* TouchRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000010 /* TouchRouter.swift */; };
+		A1000001000000000000000F /* PairingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000011 /* PairingService.swift */; };
+		A10000010000000000000010 /* PushReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000012 /* PushReceiver.swift */; };
+		A10000010000000000000011 /* AppContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000013 /* AppContainer.swift */; };
+		A10000010000000000000012 /* PairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000014 /* PairingView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A20000010000000000000001 /* BetweenUsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetweenUsApp.swift; sourceTree = "<group>"; };
+		A20000010000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A20000010000000000000004 /* BetweenUs.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = BetweenUs.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000010000000000000005 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A20000010000000000000006 /* TouchKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Models/TouchKind.swift; sourceTree = "<group>"; };
+		A20000010000000000000007 /* ConnectionSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Services/ConnectionSession.swift; sourceTree = "<group>"; };
+		A20000010000000000000008 /* BetweenUsHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Home/BetweenUsHomeView.swift; sourceTree = "<group>"; };
+		A20000010000000000000009 /* BetweenUsHeroCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Home/Components/BetweenUsHeroCard.swift; sourceTree = "<group>"; };
+		A2000001000000000000000A /* ConnectionStatusCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Home/Components/ConnectionStatusCard.swift; sourceTree = "<group>"; };
+		A2000001000000000000000B /* TouchActionGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Home/Components/TouchActionGrid.swift; sourceTree = "<group>"; };
+		A20000020000000000000001 /* BetweenUsWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetweenUsWatchApp.swift; sourceTree = "<group>"; };
+		A20000020000000000000002 /* BetweenUsWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = BetweenUsWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000020000000000000003 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A20000020000000000000004 /* WatchReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Services/WatchReceiver.swift; sourceTree = "<group>"; };
+		A20000020000000000000005 /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/WatchHome/WatchHomeView.swift; sourceTree = "<group>"; };
+		A20000020000000000000006 /* WatchActionGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/WatchHome/WatchActionGrid.swift; sourceTree = "<group>"; };
+		A20000020000000000000007 /* WatchHomePreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/WatchHome/WatchHomePreviewView.swift; sourceTree = "<group>"; };
+		A2000001000000000000000C /* TouchTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Services/TouchTransport.swift; sourceTree = "<group>"; };
+		A2000001000000000000000D /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Services/APIClient.swift; sourceTree = "<group>"; };
+		A2000001000000000000000E /* CredentialStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Services/CredentialStore.swift; sourceTree = "<group>"; };
+		A2000001000000000000000F /* RemoteTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Services/RemoteTransport.swift; sourceTree = "<group>"; };
+		A20000010000000000000010 /* TouchRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Services/TouchRouter.swift; sourceTree = "<group>"; };
+		A20000010000000000000011 /* PairingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Services/PairingService.swift; sourceTree = "<group>"; };
+		A20000010000000000000012 /* PushReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Services/PushReceiver.swift; sourceTree = "<group>"; };
+		A20000010000000000000013 /* AppContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/AppContainer.swift; sourceTree = "<group>"; };
+		A20000010000000000000014 /* PairingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Home/PairingView.swift; sourceTree = "<group>"; };
+		A20000010000000000000015 /* BetweenUs.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BetweenUs.entitlements; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		A30000000000000000000001 = {isa = PBXGroup; children = (A30000010000000000000001, A30000020000000000000001, A30000000000000000000002); sourceTree = "<group>"; };
+		A30000010000000000000001 /* BetweenUs */ = {isa = PBXGroup; children = (A20000010000000000000001, A20000010000000000000002, A20000010000000000000005, A20000010000000000000006, A20000010000000000000007, A20000010000000000000008, A20000010000000000000009, A2000001000000000000000A, A2000001000000000000000B, A2000001000000000000000C, A2000001000000000000000D, A2000001000000000000000E, A2000001000000000000000F, A20000010000000000000010, A20000010000000000000011, A20000010000000000000012, A20000010000000000000013, A20000010000000000000014, A20000010000000000000015); path = BetweenUs; sourceTree = "<group>"; };
+		A30000020000000000000001 /* BetweenUsWatch */ = {isa = PBXGroup; children = (A20000020000000000000001, A20000020000000000000003, A20000020000000000000004, A20000020000000000000005, A20000020000000000000006, A20000020000000000000007); path = BetweenUsWatch; sourceTree = "<group>"; };
+		A30000000000000000000002 /* Products */ = {isa = PBXGroup; children = (A20000010000000000000004, A20000020000000000000002); name = Products; sourceTree = "<group>"; };
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A40000010000000000000001 = {isa = PBXNativeTarget; buildConfigurationList = A50000010000000000000001; buildPhases = (A60000010000000000000001, A60000010000000000000002); name = BetweenUs; productName = BetweenUs; productReference = A20000010000000000000004; productType = "com.apple.product-type.application"; };
+		A40000020000000000000001 = {isa = PBXNativeTarget; buildConfigurationList = A50000020000000000000001; buildPhases = (A60000020000000000000003, A60000020000000000000004); name = BetweenUsWatch; productName = BetweenUsWatch; productReference = A20000020000000000000002; productType = "com.apple.product-type.application"; };
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A70000000000000000000001 = {isa = PBXProject; attributes = { LastUpgradeCheck = 1540; ORGANIZATIONNAME = BetweenUs; TargetAttributes = { A40000010000000000000001 = { CreatedOnToolsVersion = 15.4; }; A40000020000000000000001 = { CreatedOnToolsVersion = 15.4; }; }; }; buildConfigurationList = A50000000000000000000001; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, zh-Hans); mainGroup = A30000000000000000000001; productRefGroup = A30000000000000000000002; projectDirPath = ""; projectRoot = ""; targets = (A40000010000000000000001, A40000020000000000000001); };
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A60000010000000000000002 = {isa = PBXResourcesBuildPhase; files = (); };
+		A60000020000000000000004 = {isa = PBXResourcesBuildPhase; files = (); };
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A60000010000000000000001 = {isa = PBXSourcesBuildPhase; files = (A10000010000000000000001, A10000010000000000000002, A10000010000000000000004, A10000010000000000000005, A10000010000000000000006, A10000010000000000000007, A10000010000000000000008, A10000010000000000000009, A1000001000000000000000A, A1000001000000000000000B, A1000001000000000000000C, A1000001000000000000000D, A1000001000000000000000E, A1000001000000000000000F, A10000010000000000000010, A10000010000000000000011, A10000010000000000000012); };
+		A60000020000000000000003 = {isa = PBXSourcesBuildPhase; files = (A10000020000000000000001, A10000020000000000000002, A10000020000000000000003, A10000020000000000000004, A10000020000000000000005, A10000020000000000000006); };
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A80000010000000000000001 = {isa = XCBuildConfiguration; buildSettings = { PRODUCT_BUNDLE_IDENTIFIER = com.betweenus.app; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2"; INFOPLIST_FILE = BetweenUs/Info.plist; SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 16.4; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; DEBUG_INFORMATION_FORMAT = dwarf; ENABLE_PREVIEWS = YES; CODE_SIGN_ENTITLEMENTS = BetweenUs/BetweenUs.entitlements; }; name = Debug; };
+		A80000010000000000000002 = {isa = XCBuildConfiguration; buildSettings = { PRODUCT_BUNDLE_IDENTIFIER = com.betweenus.app; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2"; INFOPLIST_FILE = BetweenUs/Info.plist; SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 16.4; CODE_SIGN_ENTITLEMENTS = BetweenUs/BetweenUs.entitlements; }; name = Release; };
+		A80000020000000000000001 = {isa = XCBuildConfiguration; buildSettings = { PRODUCT_BUNDLE_IDENTIFIER = com.betweenus.app.watchkitapp; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = 4; INFOPLIST_FILE = BetweenUsWatch/Info.plist; SDKROOT = watchos; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; DEBUG_INFORMATION_FORMAT = dwarf; ENABLE_PREVIEWS = YES; }; name = Debug; };
+		A80000020000000000000002 = {isa = XCBuildConfiguration; buildSettings = { PRODUCT_BUNDLE_IDENTIFIER = com.betweenus.app.watchkitapp; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = 4; INFOPLIST_FILE = BetweenUsWatch/Info.plist; SDKROOT = watchos; }; name = Release; };
+		A80000000000000000000001 = {isa = XCBuildConfiguration; buildSettings = { ALWAYS_SEARCH_USER_PATHS = NO; CLANG_ENABLE_MODULES = YES; SWIFT_VERSION = 5.0; }; name = Debug; };
+		A80000000000000000000002 = {isa = XCBuildConfiguration; buildSettings = { ALWAYS_SEARCH_USER_PATHS = NO; CLANG_ENABLE_MODULES = YES; SWIFT_VERSION = 5.0; }; name = Release; };
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A50000010000000000000001 = {isa = XCConfigurationList; buildConfigurations = (A80000010000000000000001, A80000010000000000000002); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A50000020000000000000001 = {isa = XCConfigurationList; buildConfigurations = (A80000020000000000000001, A80000020000000000000002); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A50000000000000000000001 = {isa = XCConfigurationList; buildConfigurations = (A80000000000000000000001, A80000000000000000000002); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+/* End XCConfigurationList section */
+	};
+	rootObject = A70000000000000000000001;
+}
